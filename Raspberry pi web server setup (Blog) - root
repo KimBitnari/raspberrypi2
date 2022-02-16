@@ -1,0 +1,45 @@
+1. putty로 접속하기
+  - raspi의 ip주소에 접속합니다.
+
+2. 슈퍼유저 되기
+  - 아래의 코드로 슈퍼유저가 됩니다.
+  - sudo su -
+
+3. Batflat
+  - Batflat을 사용해서 blog를 만들어보려고 합니다.
+  - project page: https://batflat.org
+  - github site: https://github.com/sruupl/batflat
+
+3-1. Install Nginx HTTP Server
+  - 아래 코드들을 실행합니다.
+  - 저는 처음 web service setting 했을 때 해주었기 때문에 넘어가도록 하겠습니다.
+  1) apt update
+  2) apt install nginx
+  3) service nginx restart
+
+3-2. Install PHP 7.3 & Related Modules
+  - 아래의 코드들을 실행합니다.
+  1) apt install software-properties-common
+  2) apt update
+  3) apt install php7.3-fpm php7.3-common php7.3-mbstring php7.3-xmlrpc php7.3-sqlite3 php7.3-soap php7.3-gd php7.3-xml php7.3-cli php7.3-curl php7.3-zip
+
+3-3. Configure Nginx Batflat site
+  - 가상호스트로 세팅합니다.
+      > 도메인: narisblog.com
+      > 사용자: nari (첫번째 web server setup에서 추가됨)
+      > 도큐먼트 홈: /home/nari/html/blog
+  - 아래의 코드들을 실행합니다.
+  1) cd /etc/nginx/sites-available
+  2) vi narisblog.com
+  3) cd /etc/nginx/sites-enabled
+  4) ln -s /etc/nginx/sites-available/narisblog.com narisblog.com
+  5) nginx -t
+  6) service nginx restart
+
+4. user part로 넘어가기
+
+-------------------------------------------------------------------------------------------------
+
+아래의 링크에 들어가시면 설명과 더불어 사진이 같이 있어 이해하는데 더 도움이 될 것같습니다. 참고하세요!
+  > https://velog.io/@qkqhqhrh11/Raspberry-pi-web-server-setup-Blog-root
+  

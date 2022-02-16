@@ -1,0 +1,43 @@
+1. 슈퍼유저 되기
+  > sudo su -
+
+2. 사용자 계정 추가
+
+  - 계정을 하나 만들어주고, 비밀번호까지 만들어 줍니다.
+  > useradd -m username
+  > passwd username
+  
+3. 세팅파일 제작
+  - 사용자의 웹사이트가 돌아갈 수 있도록 세팅을 해줍니다.
+  - 도메인(test.com)을 생성해줍니다.
+  - server_name과 root dir.를 잘 확인해서 작성해주세요
+  > vi /etc/nginx/sites-available/test.com
+  > cd /etc/nginx/sites-available
+  > cat test.com
+  > 내용: server {
+                  listen 80;
+                  listen [::]:80;
+                  
+                  server_name test.com;
+                  
+                  root /home/username/html;
+                  index index.html;
+          }
+          
+4. 심볼릭 링크 제작
+  > ln -s /etc/nginx/sites-available/test.com /etc/nginx/sites-enabled/test.com
+
+5. 웹서비스 세팅 테스트
+  > nginx -t
+
+6. 웹서비스 재시작
+  > service nginx restart
+  
+7. 사용자에게 정보 전달
+  - 서버 ip 주소, username, password와 웹사이트 document root(/home/username/html)를 전달해줍니다.
+
+----------------------------------------------------------------------------------------------------------
+
+아래의 링크에 들어가시면 설명과 더불어 사진이 같이 있어 이해하는데 더 도움이 될 것같습니다. 참고하세요!
+  > https://velog.io/@qkqhqhrh11/Raspberry-pi-web-server-setup-root
+

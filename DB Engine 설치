@@ -1,0 +1,88 @@
+1. 슈퍼유저 되기
+  - 아래의 코드로 슈퍼유저가 됩니다.
+  > sudo su -
+
+2. mariadb설치
+  - 아래의 코드로 mariadb를 설치해줍니다.
+  > apt-get -y install mariadb-server
+
+3. 기본 설정파일 수정
+  - 아래의 코드들을 실행해서 파일을 수정해 줍니다.
+  1) vi /etc/mysql/mariadb.conf.d/50-server.cnf
+      - 아래 두줄는 주석 처리를 해주고(대략 100번째 줄로 이동),
+          - #Character-set-server = utf8mb4
+          - #collation-server = utf8mb4_general_ci
+      - 아래 다섯줄은 추가해줍니다.
+          - init_connect=SET collation_connection = utf8_general_ci
+          - init_connect=SET NAMES utf8
+          - character-set-server=utf8
+          - collation-server=utf8_general_ci
+          - lower_case_table_names = 1
+  2) vi /etc/mysql/mariadb.conf.d/50-client.cnf
+      - 아래 한 줄은 주석 처리를 해주고(초반 위쪽에 있음),
+          - #default-character-set = utf8mb4
+      - 아래 한 줄은 추가해줍니다.
+          - default-character-set = utf8
+
+4. 서버 재시작
+  - 아래의 코드로 서버를 재시작해줍니다.
+  > service mysql restart
+
+5. mariadb 접속
+  - 아래의 코드로 서버에 접속하고, root 비밀번호를 생성합니다.
+  1) 접속: mysql -u root -p
+      - 비밀번호를 입력하라고 뜨긴하지만 초기엔 비밀번호가 없기때문에 그냥 enter 치고 들어오면 됩니다.
+  2) 비밀번호: uupdate mysql.user set authentication_string=password('0000') where user='root';
+      - 0000에 원하는 비밀번호를 입력하면 됩니다.
+
+6. 특정 사용자를 위한 DB만들기
+  - 만들기 위해서는 3가지 필요한 사항들이 있습니다.
+  1) 사용자용 DB
+  2) DB접근 사용자명
+  3) 비밀번호
+  - 3가지 사항들 만드는 코드 
+      1) create database naridb;
+      2) grant all privileges on naridb.* to 'db_bitnari'@'localhost' identified by '0000';
+      3) flush privileges;
+      4) quit
+  1) 사용자용 DB: naridb
+  2) DB접근 사용자명: db_bitnari
+  3) 비밀번호: 0000
+
+7. 테스트
+  - system의 root에서 나와 일반 사용자로 로그인 해줍니다.
+  - 아래의 코드들을 실행합니다.
+      1) mysql -u db_bitnari -p
+      2) 비밀번호 입력
+      3) use naridb
+      4) quit
+
+8. 서버관리자에게 웹서비스 세팅 확인 요청
+  - 다시 system root로 들어가서 슈퍼 유저가 됩니다.
+  - 사용자의 가상호스트 웹사이트에서 php 구동이 가능하도록 파일 수정을 해줍니다.
+  - 코드:
+    vi /etc/nginx/sites-available/nari.com -> 내용은 맨 아래의 링크들어가시면 확인하실 수 있습니다.
+    service nginx restart
+    apt install php-mysql
+    service nginx restart
+
+9. PHP+MySQL 사용하는 웹사이트 소스 제작
+  - 다신 일반 사용자로 로그인 해주고, html로 dir 이동을 해줍니다.
+  - github에 fork해둔 웹사이트 소스를 git clone해줍니다.
+
+10. 서버관리자로부터 받은 DB 정보 반영
+  - 아래의 코드를 이용해 user, pass, db_name에 받은 DB 정보로 수정해줍니다.
+  > vi Chat-Room/connection.php
+
+11. 사용자 DB에 테이블 생성
+  - 아래의 코드를 실행해줍니다.
+  > mysql -u db_bitnari -p naridb < Chat-Room/database/chat.sql
+
+12. 웹사이트 접속 테스트
+
+-----------------------------------------------------------------------------------------------------------------
+
+아래의 링크에 들어가시면 설명과 더불어 사진이 같이 있어 이해하는데 더 도움이 될 것같습니다. 참고하세요!
+  > https://velog.io/@qkqhqhrh11/DB-Engine-%EC%84%A4%EC%B9%98
+  
+  

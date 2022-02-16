@@ -1,0 +1,81 @@
+1. raspberry pi 필요한 파일들 다운
+  - raspberry 오피셜 페이지에 들어가서 imager와 raspbian을 다운받습니다.
+      > 주소: https://www.raspberrypi.org/downloads/
+  - imager는 각자의 OS에 맞는 것을 다운받으면 됩니다.
+  - raspbian은 Raspbian Buster with desktop and renommended software을 zip파일로 다운받습니다.
+
+2. imager 실행
+  - imager가 .exe파일로 다운로드 완료되었다면 그 파일을 클릭해 설치해줍니다.
+  - imager가 실행되면 SD카드를 컴퓨터에 넣어줍니다.
+
+  2-1. SD카드 메모리 포맷해줍니다.
+    - OS는 "ERASE"
+    - SD카드는 방금 넣은 카드 선택 후,
+    - WRITE 클릭 => 포맷 완료
+  
+  2-2. 다운받은 zip파일로 OS넣어줍니다.
+    - OS는 "Use custom" 클릭 -> 다운받은 raspbian zip파일 클릭
+        (이때, 경로에 한글로 된 경로가 있다면 에러가 나니까 zip파일을 한글 경로가 없도록 이동시켜주세요!)
+    - SD카드는 동일하게 넣어둔 SD카드 선택 후,
+    - WRITE 클릭 => 완료
+    
+  - SD카드 뺐다가 다시 넣어줍니다.
+  - SD카드의 이름이 boot라고 생기고, 그 안에 내용들이 들어간 것을 확인할 수 있습니다.
+  
+3. ssh 파일 만들기(in boot)
+  - 저는 windows를 사용하기 때문에 windows에서 하는 방법을 설명하도록 하겠습니다.
+  - 메모장을 열어서 빈 내용을 다른이름으로 저장을 클릭하여 이름을 ssh로 바꾸고 저장해줍니다.
+  - 저장되는 장소는 boot SD카드 안! 입니다.
+  - 그러면 .txt파일로 생성이 되는데 ssh는 어떤 확장자도 가져서 안되기때문에 이 확장자를 없애줍니다.
+  - 폴더에 상반바에서 "보기" -> "파일 확장명"에 체크해서 확장자가 보일 수 있도록한 다음에 ssh.txt 파일을 클릭 -> 이름바꾸기 클릭 
+      -> .txt를 지워 ssh만 납겨두고 저장합니다.
+  - ssh가 그냥 "파일"로 저장된 모습을 확인할 수 있습니다.
+  
+4. 와이파이 공유기 정보 미리 넣어주기(in boot)
+  - 메모장을 열어서 아래의 내용을 입력해 주고, 다른이름으로 저장을 클릭하여 파일 이름은 wpa_supplicant.conf를 입력하고 파일 형식을 
+    "모든 파일"로 해준 다음 확인을 누릅니다.
+        ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+        update_config=1
+        country=US
+        network={
+          scan_ssid=1
+          ssid="Wifi이름(SSID)"
+          psk="Wifi비밀번호"
+        }
+  - 지금 사용하고있는 컴퓨터에 사용된 wifi와 동일한 wifi를 입력해 주어야합니다.
+     
+5. raspberry pi 연결
+  - raspberry pi에 전원 어뎁터를 연결하여 on해줍니다.
+  - cmd 창을 열어서 "ping raspberrypi.local"을 해서 걸리는지 확인합니다. 만약 ping이 걸린다면 와이파이를 제대로 잡은 것입니다.
+  - 만약에 위에 코드를 입력했는데 실패가 된다면?
+      (1) cmd 창에서 "ipconfig"를 입력하여 "무선 LAN 어댑터 Wi-Fi: "이 뒤에오는 ip주소와 ping했을 때 나오는 주소와 일치하는지 확인합니다.
+      (2) 일치하다면 파일의 수정을 권해드리고,
+      (3) 일치하지 않다면, nmap를 설치해서 raspberry pi의 ip주소를 찾아내야합니다.
+      (4) nmap 설치가 완료되면 cmd 창에서 nmap의directory로 이동해줍니다. (cd nmapDirectory)
+      (5) 무선 LAN ip 주소가 예를 들어, 190.160.0.72이라면 "nmap -sn 190.160.0.0/24"를 입력해줍니다.
+           > "nmap -sn 무선.LAN.ip.주소(마지막수는 0/24)"
+      (6) raspberry의 ip주소가 나옵니다.
+      (7) 이래도 나오지 않는다면 세팅의 문제!
+      
+6. raspberry pi web service setting
+  - raspberry의 ip주소를 찾았다면은 putty를 실행시켜서 HostName에 raspberry ip주소를 입력하고 open합니다.
+  - 창이 뜨면 id는 "pi", password는 "raspberry"를 입력해줍니다.
+  - "sudo su –"를 입력해서 superuser를 변경합니다.
+      > - pi@raspberrypi가 root@raspberrypi로 변경된 것을 확인할 수 있습니다.
+  - "apt-get update"를 입력해서 패키지 정보를 업데이트합니다.
+  - Web server인 nginx를 설치해줍니다. (apt-get install nginx)
+      > 밑에 ~~~continue? 라고 뜨면 enter 또는 Y를 입력해주세요 -> 그러면 계속 이어서 실행
+  - 서버를 실행합니다. (service nginx start) -> 아무것도 뜨고 않으면 정상적으로 서비스 가동된 것
+  - ip주소를 까먹었다면?
+      > "ifconfig"를 입력 -> wlan0 부분에 inet 뒤에 오는 ip주소
+  - 해당 ip주소를 url에 입력하면 기본 페이지 뜹니다. 웹서버 가동 성공!
+  
+--------------------------------------------------------------------------------------------------
+
+기본 페이지를 변경하고 싶다면 
+  1. 먼저 "cd /var/www/html"를 입력해서 이동합니다.
+  2. "vi index.html"를 입력해서 내용 작성 후, "cat index.html"로 내용을 확인합니다.
+  3. 페이지 새로고침해서 바뀌었는지 확인합니다.
+  
+아래의 링크는 본 내용의 원본이 있는 블로그로, 사진도 같이 있어 더 이해하기 쉬울 것입니다:)
+  > https://velog.io/@qkqhqhrh11/Raspberry-Pi%EC%97%90-web-service-setting

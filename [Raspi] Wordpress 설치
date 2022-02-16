@@ -1,0 +1,44 @@
+### 0. 사용자 계정으로 로그인
+
+### 1. 설치파일 다운로드
+- 아래의 코드를 실행해주시면 됩니다.
+> wget https://ko.wordpress.org/latest-ko_KR.tar.gz
+
+### 2. 압출 풀기
+- 아래의 코드를 실행해주시면 됩니다.
+> tar -xzvf latest-ko_KR.tar.gz
+
+### 3. 설치 페이지 실행
+- 아래의 url로 이동합니다.
+> http://nari.com/wordpress/
+
+ >데이터베이스 이름 = 사용자용 DB
+사용자명 = DB 사용자 계정
+암호 = 비밀번호
+를 입력해주시면 됩니다.
+
+### 4. wp-config.php 파일 제작
+- 화면에 뜬 내용을 복사해 붙여넣어줍니다.
+> cat > wp-config.php
+
+### 5. 사이트 제목, 관리자 정보(ID/PW), 이메일 입력
+
+### 6. 설치 성공
+- 이전에 입력했던 관리자 정보로 로그인하고 들어가면 성공입니다.
+
+### 7. 디렉토리 권한 변경
+- 아래의 코드를 실행해주시면 됩니다.
+> sudo chgrp -R www-data ~/html/wordpress/wp-content
+sudo chmod -R 775 ~/html/wordpress/wp-content
+
+### 8. wp-config.php 파일 수정
+- 맨 마지막에 한 줄 추가해줍니다.
+> vi wp-config.php
+
+### 9. 테마 바꾸기
+- 관리자 페이지 -> '테마디자인' -> 원하는 테마 설치 후, 활성화
+
+----------------------------------------------------------------------------------
+
+아래의 링크에 들어가시면 설명과 더불어 사진이 같이 있어 이해하는데 더 도움이 될 것같습니다. 참고하세요!
+  > https://velog.io/@qkqhqhrh11/Raspi-Wordpress-%EC%84%A4%EC%B9%98
